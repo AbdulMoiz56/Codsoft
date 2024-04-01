@@ -1,0 +1,101 @@
+import customtkinter
+from tkinter import *
+from tkinter import messagebox
+
+app = customtkinter.CTk()
+app.title('TO DO LIST')
+app.geometry('350x500')
+app.config(bg='#1C3738')
+
+font1 = ('Times New Roman', 30, 'bold')
+font2 = ('Times New Roman', 18, 'bold')
+font3 = ('Times New Roman', 15, 'bold')
+
+
+def load_tasks():
+    try:
+        with open('tasks.txt', 'r') as file:
+            for line in file:
+                parts = line.strip().split(',')
+                if len(parts) == 2:
+                    task_text, status = parts
+                    work.insert(END, task_text)
+                    if status.strip() == 'Done':
+                        work.itemconfig(END, fg='green')
+    except FileNotFoundError:
+        pass
+
+
+def save_tasks():
+    with open('tasks.txt', 'w') as file:
+        work.get(0, END)
+        for task_index in range(work.size()):
+            task_text = work.get(task_index)
+            status = 'Done' if work.itemcget(task_index, 'fg') == 'green' else 'Not Done'
+            file.write(f'{task_text}, {status}\n')
+
+
+def add_task():
+    task = entry.get()
+    if task:
+        work.insert(END, task)
+        entry.delete(0, END)
+        save_tasks()
+    else:
+        messagebox.showerror('Error', 'Enter a task.')
+
+
+def remove_task():
+    selected = work.curselection()
+    if selected:
+        work.delete(selected)
+        save_tasks()
+    else:
+        messagebox.showerror('Error', 'Choose a task to delete')
+
+
+def view_progress():
+    done_count = 0
+    total_count = work.size()
+    for i in range(total_count):
+        if work.itemcget(i, 'fg') == 'green':
+            done_count += 1
+    messagebox.showinfo('Task statistics', f'Total Tasks: {total_count}\nCompleted tasks: {done_count}')
+
+
+def mark_done():
+    task_index = work.curselection()
+    if task_index:
+        work.itemconfig(task_index, fg='green')
+        save_tasks()
+    else:
+        messagebox.showerror('Error', 'Select the task which you have completed.')
+
+
+title_label = customtkinter.CTkLabel(app, font=font1, text='TO DO LIST', text_color='#EFF6E0', bg_color='#1C3738')
+title_label.place(x=90, y=20)
+
+button1 = customtkinter.CTkButton(app, font=font2, text='Add task', fg_color='#EFF6E0', command=add_task, text_color='#124559', bg_color='#1C3738', hover_color='#A4C3B2', width=120, height=4, corner_radius=7)
+button1.configure(corner_radius=7)
+button1.place(x=40, y=80)
+
+button2 = customtkinter.CTkButton(app, font=font2, text='Remove task', fg_color='#EFF6E0', text_color='#124559', command=remove_task, bg_color='#1C3738', hover_color='#A4C3B2', corner_radius=7)
+button2.place(x=180, y=80)
+
+entry = customtkinter.CTkEntry(app, font=font2, text_color='#121619', fg_color='white', bg_color='#1C3738', border_color='black', width=280)
+entry.place(x=40, y=160)
+
+work = Listbox(app, font=font3, width=29, height=10, bg='white', bd=3, relief='solid')
+work.place(x=30, y=220)
+
+button3 = customtkinter.CTkButton(app, font=font2, command=mark_done,  text='Task Done', fg_color='#EFF6E0', text_color='#124559', bg_color='#1C3738', hover_color='#A4C3B2', width=120, height=4, corner_radius=7)
+button3.configure(corner_radius=7)
+button3.place(x=40, y=120)
+
+button4 = customtkinter.CTkButton(app, font=font2, command=view_progress,  text='View Progress', fg_color='#EFF6E0', text_color='#124559', bg_color='#1C3738', hover_color='#A4C3B2', width=138, height=12, corner_radius=7)
+button4.configure(corner_radius=7)
+button4.place(x=180, y=120)
+
+load_tasks()
+
+app.mainloop()
