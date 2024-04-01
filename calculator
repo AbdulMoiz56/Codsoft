@@ -1,0 +1,110 @@
+import tkinter
+
+from customtkinter import *
+from tkinter import *
+from tkinter import messagebox
+
+app = CTk()
+
+app.title('CALCULATOR')
+app.geometry('450x450')
+app.config(bg='#504746')
+
+font = ('Arial', 20, 'bold')
+
+i = 0
+equation = ''
+
+
+def show(value):
+    global i
+    global equation
+    equation += value
+    result_entry.insert(i, value)
+    i = i + 1
+
+
+def remove_last():
+    global equation
+    equation = equation[:-1]
+    current_text = result_entry.get()[:-1]
+    result_entry.delete(0, END)
+    result_entry.insert(0, current_text)
+
+
+def clear():
+    global equation
+    result_entry.delete(0, END)
+    equation = ''
+
+
+def calculate():
+    try:
+        global equation
+        result = eval(equation)
+        clear()
+        result_entry.insert(0, result)
+        equation = str(result)
+    except Exception:
+        messagebox.showerror(title='Error', message='Please enter a valid value')
+
+
+result_entry = CTkEntry(app, bg_color='#504746', font=font, width=325, height=40, fg_color='#EAEFD3', border_color='#000000', corner_radius=7)
+result_entry.place(relx=0.16, rely=0.12, anchor=tkinter.NW)
+
+button0 = CTkButton(app, command=clear, text='AC', font=font, fg_color='#1C2826', width=70, height=35, bg_color='#504746', hover_color='#b5520b', corner_radius=7)
+button0.place(relx=0.17, rely=0.26, anchor=tkinter.NW)
+
+button1 = CTkButton(app, command=remove_last, text='DEL', font=font, fg_color='#1c2826', width=70, height=35, bg_color='#504746', hover_color='#b5520b', corner_radius=7)
+button1.place(relx=0.35, rely=0.26, anchor=tkinter.NW)
+
+button2 = CTkButton(app, command=lambda: show('/'), text='/', font=font, fg_color='#b5520b', width=70, height=35, bg_color='#504746', hover_color='#b5520b', corner_radius=7)
+button2.place(relx=0.53, rely=0.26, anchor=tkinter.NW)
+
+button3 = CTkButton(app, command=lambda: show('*'), text='*', font=font, fg_color='#b5520b', width=74, height=35, bg_color='#504746', hover_color='#b5520b', corner_radius=7)
+button3.place(relx=0.71, rely=0.26, anchor=tkinter.NW)
+
+button4 = CTkButton(app, command=lambda: show('7'), text='7', font=font, fg_color='#1C2826', width=70, height=35, bg_color='#504746', hover_color='#2e2a27', corner_radius=7)
+button4.place(relx=0.17, rely=0.38, anchor=tkinter.NW)
+
+button5 = CTkButton(app, command=lambda: show('8'), text='8', font=font, fg_color='#1C2826', width=70, height=35, bg_color='#504746', hover_color='#2e2a27', corner_radius=7)
+button5.place(relx=0.35, rely=0.38, anchor=tkinter.NW)
+
+button6 = CTkButton(app, command=lambda: show('9'), text='9', font=font, fg_color='#1C2826', width=70, height=35, bg_color='#504746', hover_color='#2e2a27', corner_radius=7)
+button6.place(relx=0.53, rely=0.38, anchor=tkinter.NW)
+
+button7 = CTkButton(app, command=lambda: show('+'), text='+', font=font, fg_color='#b5520b', width=74, height=35, bg_color='#504746', hover_color='#b5520b', corner_radius=7)
+button7.place(relx=0.71, rely=0.38, anchor=tkinter.NW)
+
+button8 = CTkButton(app, command=lambda: show('4'), text='4', font=font, fg_color='#1C2826', width=70, height=35, bg_color='#504746', hover_color='#2e2a27', corner_radius=7)
+button8.place(relx=0.17, rely=0.5, anchor=tkinter.NW)
+
+button9 = CTkButton(app, command=lambda: show('5'), text='5', font=font, fg_color='#1C2826', width=70, height=35, bg_color='#504746', hover_color='#2e2a27', corner_radius=7)
+button9.place(relx=0.35, rely=0.5, anchor=tkinter.NW)
+
+button10 = CTkButton(app, command=lambda: show('6'), text='6', font=font, fg_color='#1C2826', width=70, height=35, bg_color='#504746', hover_color='#2e2a27', corner_radius=7)
+button10.place(relx=0.53, rely=0.5, anchor=tkinter.NW)
+
+button11 = CTkButton(app, command=lambda: show('-'), text='-', font=font, fg_color='#b5520b', width=74, height=35, bg_color='#504746', hover_color='#b5520b', corner_radius=7)
+button11.place(relx=0.71, rely=0.5, anchor=tkinter.NW)
+
+button12 = CTkButton(app, command=lambda: show('0'), text='0', font=font, fg_color='#1C2826', width=70, height=35, bg_color='#504746', hover_color='#2e2a27', corner_radius=7)
+button12.place(relx=0.17, rely=0.63, anchor=tkinter.NW)
+
+button13 = CTkButton(app, command=lambda: show('1'), text='1', font=font, fg_color='#1C2826', width=70, height=35, bg_color='#504746', hover_color='#2e2a27', corner_radius=7)
+button13.place(relx=0.35, rely=0.63, anchor=tkinter.NW)
+
+button14 = CTkButton(app, command=lambda: show('2'), text='2', font=font, fg_color='#1C2826', width=70, height=35, bg_color='#504746', hover_color='#2e2a27', corner_radius=7)
+button14.place(relx=0.53, rely=0.63, anchor=tkinter.NW)
+
+button15 = CTkButton(app, command=lambda: show('3'), text='3', font=font, fg_color='#1C2826', width=74, height=35, bg_color='#504746', hover_color='#2e2a27', corner_radius=7)
+button15.place(relx=0.71, rely=0.63, anchor=tkinter.NW)
+
+button16 = CTkButton(app, command=lambda: show('.'), text='.', font=font, fg_color='#1C2826', width=150, height=35, bg_color='#504746', hover_color='#2e2a27', corner_radius=7)
+button16.place(relx=0.17, rely=0.75, anchor=tkinter.NW)
+
+button17 = CTkButton(app, command=calculate, text='=', font=font, fg_color='#b5520b', width=160, height=35, bg_color='#504746', hover_color='#b5520b', corner_radius=7)
+button17.place(relx=0.52, rely=0.75, anchor=tkinter.NW)
+
+
+app.mainloop()
