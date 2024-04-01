@@ -1,0 +1,168 @@
+from tkinter import *
+from tkinter import messagebox
+
+root = Tk()
+root.geometry('700x620')
+root.config(bg='#857E61')
+root.title('Contact Book')
+
+contactlist = []
+edit_index = None
+
+
+def save_contacts():
+    with open('contacts.txt', 'w') as file:
+        for contact in contactlist:
+            name = contact['name']
+            number = contact['number']
+            email = contact['email']
+            address = contact['address']
+            file.write(f"{name}|{number}|{email}|{address}\n")
+
+def load_contacts():
+    try:
+        with open('contacts.txt', 'r') as file:
+            for line in file:
+                contact_info = line.strip().split('|')
+                if len(contact_info) == 4:
+                    name, number, email, address = contact_info
+                    contactlist.append({
+                        'name': name,
+                        'number': number,
+                        'email': email,
+                        'address': address
+                    })
+    except FileNotFoundError:
+        pass
+
+
+Name = StringVar()
+Number = StringVar()
+Email = StringVar()
+Address = StringVar()
+
+
+frame = Listbox(root, font=('Times New Roman', 11), width=64, height=17, bd=5, background='#D5D4C7')
+frame.place(x=210, y=260)
+
+
+def selected():
+    return int(frame.curselection()[0])
+
+
+def add_contact():
+    global edit_index
+    if edit_index is not None:
+        del contactlist[edit_index]
+        edit_index = None
+
+    contactlist.append({
+        'name': Name.get(),
+        'number': Number.get(),
+        'email': Email.get(),
+        'address': Address.get()
+    })
+
+    select_set()
+    Name.set('')
+    Number.set('')
+    Email.set('')
+    Address.set('')
+    save_contacts()
+
+
+def edit():
+    global edit_index
+    try:
+        index = selected()
+        selected_info = frame.get(index)
+        selected_name = selected_info.split(',')[0].split(') ')[1]
+        edit_index = next((i for i, contact in enumerate(contactlist) if contact['name'] == selected_name), None)
+        if edit_index is not None:
+            Name.set(contactlist[edit_index]['name'])
+            Number.set(contactlist[edit_index]['number'])
+            Email.set(contactlist[edit_index]['email'])
+            Address.set(contactlist[edit_index]['address'])
+    except IndexError:
+        messagebox.showerror("Error", "Please select a contact to edit.")
+
+
+def delete():
+    del contactlist[selected()]
+    select_set()
+    save_contacts()
+
+
+def exits():
+    save_contacts()
+    root.destroy()
+
+
+def select_set():
+    frame.delete(0, END)
+    for index, contact in enumerate(sorted(contactlist, key=lambda x: x.get('name', '')), start=1):
+        info = f"{index}) {contact['name']}, {contact['number']}, {contact['email']}, {contact['address']}"
+        frame.insert(END, info)
+
+
+def search():
+    name_to_search = Name.get()
+    for contact in contactlist:
+        if contact.get('name') == name_to_search:
+            Number.set(contact.get('number', ''))
+            Email.set(contact.get('email', ''))
+            Address.set(contact.get('address', ''))
+            return
+    messagebox.showerror("Contact Not Found", f"No contact found with the name '{name_to_search}'")
+
+
+def clear_fields():
+    Name.set('')
+    Number.set('')
+    Email.set('')
+    Address.set('')
+
+
+load_contacts()
+select_set()
+
+
+label1 = Label(root, text='Name:', font=('Times New Roman', 15, 'bold'), bg='#857E61')
+label1.place(x=250, y=20)
+entry1 = Entry(root, textvariable=Name, width=30, bd=3, background='#D5D4C7')
+entry1.place(x=350, y=24)
+
+label2 = Label(root, text='Number:', font=('Times New Roman', 15, 'bold'), bg='#857E61')
+label2.place(x=250, y=70)
+entry2 = Entry(root, textvariable=Number, width=30, bd=3, background='#D5D4C7')
+entry2.place(x=350, y=74)
+
+label3 = Label(root, text='Email:', font=('Times New Roman', 15, 'bold'), bg='#857E61')
+label3.place(x=250, y=120)
+entry3 = Entry(root, textvariable=Email, width=30, bd=3, background='#D5D4C7')
+entry3.place(x=350, y=124)
+
+label4 = Label(root, text='Address:', font=('Times New Roman', 15, 'bold'), bg='#857E61')
+label4.place(x=250, y=170)
+entry4 = Entry(root, textvariable=Address, width=30, bd=3, background='#D5D4C7')
+entry4.place(x=350, y=174)
+
+btn1 = Button(root, text='Add Contact', font=('Times New Roman', 14, 'bold'), bg='#E9EDDE', command=add_contact, width=11)
+btn1.place(x=50, y=270)
+
+btn2 = Button(root, text='Delete Contact', font=('Times New Roman', 14, 'bold'), bg='#E9EDDE', command=delete, width=11)
+btn2.place(x=50, y=320)
+
+btn4 = Button(root, text='Edit Contact', font=('Times New Roman', 14, 'bold'), bg='#E9EDDE', command=edit, width=11)
+btn4.place(x=50, y=370)
+
+btn5 = Button(root, text='Clear', font=('Times New Roman', 14, 'bold'), bg='#E9EDDE', command=clear_fields, width=11)
+btn5.place(x=50, y=470)
+
+btn6 = Button(root, text='Search', font=('Times New Roman', 14, 'bold'), bg='#E9EDDE', command=search, width=11)
+btn6.place(x=50, y=420)
+
+btn7 = Button(root, text='Exit', font=('Times New Roman', 14, 'bold'), bg='#E9EDDE', command=exits, width=11)
+btn7.place(x=50, y=520)
+
+root.mainloop()
